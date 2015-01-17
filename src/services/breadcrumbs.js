@@ -18,14 +18,23 @@ breadcrumbs.provider('breadcrumbs', function BreadcrumbsProvider() {
   compile = defaultCompiler;
 
   function refresh($state, breadcrumbs) {
-    var currentState = $state.$current,
-      breadcrumb;
+    var currentState = $state.$current, breadcrumb;
 
     breadcrumbs.length = 0;
 
     while(currentState.parent) {
       breadcrumb = compile(currentState.self);
-      if(breadcrumb) { breadcrumbs.unshift(breadcrumb); }
+      if(breadcrumb) { 
+        if(breadcrumb.constructor === Array) {
+          for(var i = breadcrumb.length; i > 0; i--) {
+            if(breadcrumb[i -1]) {
+              breadcrumbs.unshift(breadcrumb[i - 1]);
+            }
+          }
+        } else {
+          breadcrumbs.unshift(breadcrumb);
+        }
+      }
       currentState = currentState.parent;
     }
     return breadcrumbs;
